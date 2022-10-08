@@ -28,7 +28,7 @@ The model outputs both the probability and the inverse of the probability
 '''
 app = Dash()
 server = app.server
-model = keras.models.load_model('.\weights.hdf5')
+model = load_model('.\weights.hdf5')
 logreg_model = pickle.load(open('.\logreg_model.sav','rb'))
 available_points_diff_indicators = list(np.linspace(-15,4,num=20))
 available_games_for_set1_indicators = [0,1,2,3,4,5,6]
