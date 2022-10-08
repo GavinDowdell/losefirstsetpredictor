@@ -2,7 +2,8 @@ import sys
 import pickle
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-from tensorflow import keras
+#from tensorflow import keras
+from tensorflow.keras.models import load_model
 from dash import Dash, dcc, html, Input, Output
 import plotly.express as px
 import plotly
