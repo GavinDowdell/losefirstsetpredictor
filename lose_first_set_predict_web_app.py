@@ -28,8 +28,11 @@ The model outputs both the probability and the inverse of the probability
 '''
 app = Dash()
 server = app.server
+# keras
 model = load_model('weights.hdf5')
+# logreg
 logreg_model = pickle.load(open('logreg_model.sav','rb'))
+rf_model = pickle.load(open('rf_model.sav','rb'))
 available_points_diff_indicators = list(np.linspace(-15,4,num=20))
 available_games_for_set1_indicators = [0,1,2,3,4,5,6]
 available_breaks_for_set1_indicators = [0,1,2,3,4]
@@ -85,12 +88,12 @@ def update_score(player1_rank,player2_rank,points_diff_set1,games_for_set1,break
     ranking_diff_use = (ranking_diff_use + 20)/40
     tmp = model.predict(np.array([ranking_diff_use,points_diff_set1,games_for_set1,breaks_for_set1]).reshape(1,-1))
     tmp1 = logreg_model.predict_proba(np.array([ranking_diff_use,points_diff_set1,games_for_set1,breaks_for_set1]).reshape(1, -1))[0,1]
+    tmp2 = rf_model.predict_proba(np.array([ranking_diff_use,points_diff_set1,games_for_set1,breaks_for_set1]).reshape(1, -1))[0,1]
     result1 = '\nProbability for the Player\n' 
-    result1 = result1 + f'MLP {float(tmp[0]):0.4f}' + ' ' + f'({1/float(tmp[0]):0.4f})' + f'  LR {float(tmp1):0.4f}' + ' ' + f'({1/float(tmp1):0.4f})'
+    result1 = result1 + f'MLP {float(tmp[0]):0.4f}' + ' ' + f'({1/float(tmp[0]):0.4f})' + f'  LR {float(tmp1):0.4f}' + ' ' + f'({1/float(tmp1):0.4f})' + f'  RF {float(tmp2):0.4f}' + ' ' + f'({1/float(tmp2):0.4f})'
     result2 = '\nProbability for the Opposition\n' 
-    result2 = result2 + f'MLP {(1-float(tmp[0])):0.4f}' + ' ' + f'({1/(1-float(tmp[0])):0.4f})' + f'  LR {(1-float(tmp1)):0.4f}' + ' ' + f'({1/(1-float(tmp1)):0.4f})'   
+    result2 = result2 + f'MLP {(1-float(tmp[0])):0.4f}' + ' ' + f'({1/(1-float(tmp[0])):0.4f})' + f'  LR {(1-float(tmp1)):0.4f}' + ' ' + f'({1/(1-float(tmp1)):0.4f})' + f'  RF {(1-float(tmp2)):0.4f}' + ' ' + f'({1/(1-float(tmp2)):0.4f})'  
     return title,title1,result1,result2
-
 
 if __name__ == '__main__':
     app.run_server()
